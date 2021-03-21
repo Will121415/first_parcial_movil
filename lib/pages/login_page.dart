@@ -1,4 +1,5 @@
 import 'package:first_parcial/models/user.dart';
+import 'package:first_parcial/pages/home_page.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -120,19 +121,53 @@ class _LoginPageState extends State<LoginPage> {
 
           if (user.isNotEmpty && password.isNotEmpty) {
             if ((user == _user.user) && (password == _user.password)) {
-              print('Bienvenido $user');
+              _messageResponde(context, 'Bienvenido $user', isLogin: true);
+              controllerUser.clear();
+              controllerPassword.clear();
             } else {
-              print('Usuario y/o Contraseña incorrecta...!');
+              _messageResponde(
+                  context, 'Usuario y/o Contraseña incorrecta...!');
+              controllerUser.clear();
+              controllerPassword.clear();
             }
           } else {
             if (user.isEmpty) {
-              print('El campo USER es obligatorio..!');
+              _messageResponde(context, 'El campo USER es obligatorio..!');
             } else {
-              print('El campo PASSWORD es obligatorio..!');
+              _messageResponde(context, 'El campo PASSWORD es obligatorio..!');
             }
           }
         },
       );
     });
+  }
+
+  _messageResponde(BuildContext context, String message, {isLogin = false}) {
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              title: Text('Mensaje Informativo...!'),
+              content: Text(message),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    if (isLogin) {
+                      Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomePage(user)))
+                          .then((value) {
+                        Navigator.pop(context);
+                      });
+                    } else
+                      Navigator.pop(context);
+                  },
+                  child: Text(
+                    'Aceptar',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ),
+              ],
+            ));
   }
 }
