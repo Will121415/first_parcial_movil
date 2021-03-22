@@ -84,7 +84,7 @@ class _LoginPageState extends State<LoginPage> {
           controller: controllerPassword,
           decoration: InputDecoration(
               icon: Icon(Icons.lock),
-              hintText: '*******',
+              hintText: '••••••',
               labelText: 'Password'),
         ),
       );

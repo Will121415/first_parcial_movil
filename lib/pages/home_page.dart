@@ -1,6 +1,9 @@
+import 'package:first_parcial/messages/alert_messages.dart';
 import 'package:first_parcial/models/person.dart';
 import 'package:first_parcial/pages/register_page.dart';
 import 'package:flutter/material.dart';
+
+import 'modify_page.dart';
 
 class MainApp extends StatelessWidget {
   final String user;
@@ -54,20 +57,39 @@ class _HomePageState extends State<HomePage> {
         itemCount: persons.length,
         itemBuilder: (context, index) {
           return ListTile(
-              onTap: () {},
-              title: Text(persons[index].name + ' ' + persons[index].surname),
-              subtitle: Text(persons[index].profession),
-              leading: CircleAvatar(
-                backgroundImage: NetworkImage(persons[index].image),
-              ),
-              trailing: Column(
-                // mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(persons[index].format()),
-                  Text(persons[index].getAge()),
-                ],
-              ));
+            onTap: () {
+              Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Modify(persons[index])))
+                  .then((value) {
+                if (value != null) {
+                  setState(() {
+                    persons.removeAt(index);
+                    persons.insert(index, value);
+
+                    messageResponde(
+                        context, value.name + ' a sido actualizado...!');
+                  });
+                }
+              });
+            },
+            onLongPress: () {
+              _removePerson(context, persons[index]);
+            },
+            title: Text(persons[index].name + ' ' + persons[index].surname),
+            subtitle: Text(persons[index].profession),
+            leading: CircleAvatar(
+              backgroundImage: NetworkImage(persons[index].image),
+            ),
+            trailing: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(persons[index].format()),
+                Text(persons[index].getAge()),
+              ],
+            ),
+          );
         },
       ),
       bottomNavigationBar: BottomAppBar(
@@ -86,6 +108,7 @@ class _HomePageState extends State<HomePage> {
             if (value != null) {
               setState(() {
                 persons.add(value);
+                messageResponde(context, value.name + ' a sido guardado...!');
               });
             }
           });
@@ -94,6 +117,40 @@ class _HomePageState extends State<HomePage> {
         child: Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+    );
+  }
+
+  void _removePerson(BuildContext context, Person person) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text('Eliminar Perfil...!'),
+        content: Text('Estas seguro de eliminar ' + person.name + ' ?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              setState(() {
+                this.persons.remove(person);
+                Navigator.pop(context);
+                messageResponde(context, person.name + ' a sido eliminado...!');
+              });
+            },
+            child: Text(
+              'Eliminar',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text(
+              'Cancelar',
+              style: TextStyle(color: Colors.blue),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
