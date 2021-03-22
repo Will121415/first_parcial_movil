@@ -1,3 +1,4 @@
+import 'package:first_parcial/models/person.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -10,18 +11,20 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  String name, surname, phone;
+  String name, surname, profession, image;
 
-  TextEditingController controllerName;
-  TextEditingController controllerSurname;
-  TextEditingController controllerPhone;
+  TextEditingController ctrlName;
+  TextEditingController ctrlSurname;
+  TextEditingController ctrlProfession;
+  TextEditingController ctrlImage;
   DateTime dateInput;
 
   @override
   void initState() {
-    controllerName = TextEditingController();
-    controllerSurname = TextEditingController();
-    controllerPhone = TextEditingController();
+    ctrlName = TextEditingController();
+    ctrlSurname = TextEditingController();
+    ctrlProfession = TextEditingController();
+    ctrlImage = TextEditingController();
     super.initState();
   }
 
@@ -30,7 +33,7 @@ class _RegisterState extends State<Register> {
     return MaterialApp(
       title: 'Register',
       theme: ThemeData(
-        primarySwatch: Colors.green,
+        primarySwatch: Colors.blue,
       ),
       home: Scaffold(
         appBar: AppBar(
@@ -39,23 +42,27 @@ class _RegisterState extends State<Register> {
         body: ListView(
           children: [
             TextBox(
-              controlador: controllerName,
+              controlador: ctrlName,
               label: 'Nombre',
             ),
             TextBox(
-              controlador: controllerSurname,
+              controlador: ctrlSurname,
               label: 'Apellido',
             ),
             TextBox(
-              controlador: controllerPhone,
-              label: 'Telefono',
+              controlador: ctrlProfession,
+              label: 'Profesion',
+            ),
+            TextBox(
+              controlador: ctrlImage,
+              label: 'URL de Imagen',
             ),
             TextButton(
               onPressed: _datepresent,
               child: Text(
                 dateInput == null
-                    ? 'Establecer Fecha'
-                    : DateFormat.yMMMd().format(dateInput),
+                    ? 'Seleccionar Fecha'
+                    : 'Fecha: ' + DateFormat.yMMMd().format(dateInput),
                 style: TextStyle(color: Colors.blue),
               ),
             ),
@@ -63,13 +70,23 @@ class _RegisterState extends State<Register> {
             // Boton
             ElevatedButton(
               onPressed: () {
-                name = controllerName.text;
-                surname = controllerSurname.text;
-                phone = controllerPhone.text;
+                name = ctrlName.text;
+                surname = ctrlSurname.text;
+                profession = ctrlProfession.text;
+                image = ctrlImage.text;
 
-                if (name.isNotEmpty && surname.isNotEmpty) {
-                  // Navigator.pop(context,
-                  //     Client(name: name, surname: surname, phone: phone));
+                if (name.isNotEmpty &&
+                    surname.isNotEmpty &&
+                    profession.isNotEmpty &&
+                    image.isNotEmpty) {
+                  Navigator.pop(
+                      context,
+                      Person(
+                          image: image,
+                          name: name,
+                          surname: surname,
+                          profession: profession,
+                          date: dateInput));
                 }
               },
               child: Text('Save'),
